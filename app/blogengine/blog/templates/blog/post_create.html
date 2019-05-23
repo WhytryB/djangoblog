@@ -1,0 +1,35 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+	Создать пост - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<form class="" action="{% url 'post_create_url' %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% for field in form %}
+			<div class="form-group">
+				{% if field.errors %}
+					<div class="alert alert-danger">
+						{{ field.error }}
+					</div>
+				{% endif %}
+			</div>
+		{% endfor %}
+		<div class="form-group">
+			{{ form.title }}
+			<br>
+			{{ form.body }}
+			<br>
+			{{ form.tags }}
+			<br>
+			{{ form.moderation }}
+			<br>
+			{{ form.image }}
+		</div>
+
+
+		<button type="submit" class="btn btn-secondary" name="button">Сохранить</button>
+	</form>
+
+{% endblock %}

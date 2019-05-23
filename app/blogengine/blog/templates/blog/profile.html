@@ -1,0 +1,129 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+	Профиль - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<h3 class="text-center">Профиль пользователя: {{ username }}</h3>
+<hr>
+	{% if str_username != user.get_username %}
+	<p class="added"></p>
+		<p class="favorites" >
+			{% if post in current_user.favorite_profiles.all %}
+			<button class="btn btn-default disabled">Добавлено в избранное</button>
+			{% else %}<a href="#" class="article" data-slug="{{ username }}"><button class="btn btn-danger">Добавить в избранное</button></a>
+			{% endif %}
+		</p>
+	{% endif %}
+	<div class="row">
+
+		<table width="100%" class="text-center">
+				<tr>
+					{% if author %}
+					<td width="50%">
+						<a href="addlike/?next=/profile/{{ username }}/"><i
+								style="color:#449d44" class="button">Нравится</i></a> <span
+							class="lead">{{ author.likes }}</span>
+						&nbsp;&nbsp;&nbsp;
+						<a href="adddislike/?next=/profile/{{ username }}"><i
+								style="color:#942a25"  class="button">Не нравится</i></a>
+						<span class="lead">{{author.dislikes }}</span></td>
+						 <span class="lead text-center"> Рейтинг {{ author.rating }} </span></td>
+					{% endif %}
+					</tr>
+				</table>
+		<div class="col-sm-6">
+
+
+
+				<h4 class="text-center"><strong>	Посты Пользователя:</strong></h4>
+				<ul class="button-group">
+				{% for post in profile %}
+						<li class="list-group-item"><a href="{{ post.get_absolute_url }}" style="color:black;">{{ post.title }}</a></li>
+				{% endfor %}
+						</ul>
+					</div>
+					<div class="col-sm-6">
+					<h4 class="text-center"><strong>Избранные статьи</strong></h4>
+					<ul class="button-group">
+						{% for fav in author.favorite_articles.all %}
+						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="col-sm-4">
+					<h4 class="text-center"><strong>Избранные Профили</strong></h4>
+					<ul class="button-group">
+						{% for fav in author.favorite_profiles.all %}
+						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<br>
+				</div>
+				<div class="row">
+				<div class="col-sm-6">
+				Коментарии <hr>
+				{% for i in comments %}
+				   Пользователь:  {{ i.user }}<br>
+					{{ i.content}} <br>
+					Добавлен - {{ i.created }}
+				{% if user.is_superuser %}
+				<a href="{% url 'comments-delete-profile' id=i.id author_post=str_username %}" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
+					Удалить</a>
+
+				{% endif %}<br>
+				{% endfor %}
+				{% if user.is_active %}
+				</div>
+					<div class="col-sm-6">
+						<form action="" method="post">
+							{% csrf_token %}
+							{{ form }}
+							<button type="submit">Отправить</button>
+						</form>
+						{% else %}
+						<h4>Авторизуйтесь, чтобы оставлять коментарии</h4>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script  type="text/javascript">
+$(document).ready(function () {
+	 $('.article').on('click', function (e) {
+	 	e.preventDefault();
+	 	console.log(($(this).attr('data-slug')));
+	 	var article_slug = ($(this).attr('data-slug'));
+
+	 	data = {
+	 		article_slug: article_slug
+		};
+
+	 	$.ajax({
+			type:"GET",
+			url:"{% url 'add_to_favorites_profile' %}",
+			dataType:'json',
+			data:data,
+			success: function (data) {
+				$('.favorites').css('display', 'none');
+				$('.added').html('<button class="btn btn-default disabled">Добавлено в избранное</button>')
+
+			}
+		})
+
+	 });
+
+})
+
+
+</script>
+{% endblock scripts %}
