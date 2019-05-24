@@ -32,6 +32,7 @@ class ObjectDetailMixin:
             form.save()
             return redirect('post_detail_url', slug)
 
+
     def comment_delete(request, id, slug):
         """
         Функция фильтрации и удаления коментария пользователя
@@ -40,6 +41,16 @@ class ObjectDetailMixin:
         """
         Commets.objects.filter(id=id).delete()
         return redirect('post_detail_url', slug)
+
+class  ObjectDetailMixinTag:
+    model = None
+    template = None
+
+    def get(self, request, slug):
+        obj = get_object_or_404(self.model, slug__iexact=slug)
+        return render(request, self.template,
+                      context={self.model.__name__.lower(): obj,
+                               'admin_object': obj, 'detail': True})
 
 
 class ObjectCreateMixin:

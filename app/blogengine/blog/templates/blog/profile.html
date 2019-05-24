@@ -34,47 +34,32 @@
 					{% endif %}
 					</tr>
 				</table>
-		<div class="col-sm-6">
-
-
-
+		<div class="col-sm-12">
 				<h4 class="text-center"><strong>	Посты Пользователя:</strong></h4>
-				<ul class="button-group">
+				<ul class="button-group text-center text-success">
 				{% for post in profile %}
 						<li class="list-group-item"><a href="{{ post.get_absolute_url }}" style="color:black;">{{ post.title }}</a></li>
 				{% endfor %}
 						</ul>
 					</div>
-					<div class="col-sm-6">
-					<h4 class="text-center"><strong>Избранные статьи</strong></h4>
-					<ul class="button-group">
-						{% for fav in author.favorite_articles.all %}
-						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav}}</a></li>
-						{% endfor %}
-					</ul>
-				</div>
-				<div class="col-sm-4">
-					<h4 class="text-center"><strong>Избранные Профили</strong></h4>
-					<ul class="button-group">
-						{% for fav in author.favorite_profiles.all %}
-						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav}}</a></li>
-						{% endfor %}
-					</ul>
-				</div>
 				<br>
 				</div>
-				<div class="row">
+		<div class="col-sm-12">
+	<a class="dropdown-item" href="{% url 'favorites' author_post=request.user.username %}"><button class="btn btn-success">Избранное пользователя</button></a>
+		</div>
+			<div class="row">
 				<div class="col-sm-6">
 				Коментарии <hr>
 				{% for i in comments %}
 				   Пользователь:  {{ i.user }}<br>
-					{{ i.content}} <br>
+					Текст: {{ i.content}} <br>
 					Добавлен - {{ i.created }}
 				{% if user.is_superuser %}
 				<a href="{% url 'comments-delete-profile' id=i.id author_post=str_username %}" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
 					Удалить</a>
 
 				{% endif %}<br>
+				<hr>
 				{% endfor %}
 				{% if user.is_active %}
 				</div>

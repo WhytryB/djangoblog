@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Post, Tag, Commets, Profile, Commets_profile
-from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
+from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin, ObjectDetailMixinTag
 from .forms import TagForm, PostForm, CommentFormForProfile
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
@@ -85,7 +85,7 @@ class PostDetail(ObjectDetailMixin, View):
     template = 'blog/post_detail.html'
 
 
-class TagDetail(ObjectDetailMixin, View):
+class TagDetail(ObjectDetailMixinTag, View):
     model = Tag
     template = 'blog/tag_detail.html'
 
@@ -278,8 +278,13 @@ def profile(request, author_post):
         """
         print(i, '----')
         username.append(i.author_post)
-    str_username = str(username[0]) # никнейм пользователя переводится в читаемый формат
 
+    try:
+        null_username = username[0] # никнейм пользователя переводится в читаемый формат
+    except IndexError as e:
+        null_username = ""
+
+    str_username =str(null_username)
     if request.method == 'GET':
         """
         Идёт проверка коментариев, которые находятся на странице, если всё правильно то выводится добавленные коментарии
@@ -289,7 +294,7 @@ def profile(request, author_post):
         form = CommentFormForProfile()
         context = Profile.objects.filter(author=request.user)
         print(str(commnet)+"-", str(context)+'-')
-        return render(request, 'blog/profile.html', context={'profile': post_author, 'username':username[0],
+        return render(request, 'blog/profile.html', context={'profile': post_author, 'username':null_username,
                                                              "form": form,
                                                              "author":Rating, "str_username":str_username,
                                                              'current_user': context, "comments": commnet})
@@ -391,3 +396,26 @@ class AddProfileToFavorites(View):
         current_user.favorite_profiles.add(post.author)
 
         return JsonResponse({'ok': 'ok'})
+
+
+def render_favorite(request, author_post):
+    current_user = Profile.objects.filter(author__username=request.user)
+    post_author = Post.objects.filter(author_post__username=author_post)
+    try:
+        """
+        Если рейтинга нет, то он создается для нового пользователя
+        """
+        Rating = Profile.objects.filter(author__username=author_post)[0]
+    except:
+        Profile.objects.create(author=request.user)
+        Rating = Profile.objects.get_or_create(author__username=author_post)[0]
+    username = []
+    for i in post_author:
+        """
+        Перебор всех постов автора и добавление их в список для отображения
+        """
+        print(i, '----')
+        username.append(i.author_post)
+
+    return render(request, 'blog/favorite.html', context={'profile': post_author, 'current_user':current_user,
+                                                          'author':Rating, 'username':username[0]})

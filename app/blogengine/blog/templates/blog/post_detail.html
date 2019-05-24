@@ -48,6 +48,11 @@
 	<div class="date">
 		Опубликовано: {{ post.date_pub }}
 	</div>
+	<div class="author">
+		Автор поста:
+		<a href="{% url 'profile' author_post=post.author_post%}">
+		 {{ post.author_post}}</a>
+	</div>
 	<br>
     Коментарии <hr>
     {% for i in comments %}

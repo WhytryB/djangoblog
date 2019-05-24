@@ -41,6 +41,7 @@
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="{% url 'post_create_url' %}">Новый пост</a>
 						<a class="dropdown-item" href="{% url 'tag_create_url' %}">Новый тег</a>
+
 						<a href="{{ admin_object.get_update_url }}" class="dropdown-item edit" style="{% if detail %}display: block;{% endif %}">Изменить</a>
 						<a href="{{ admin_object.get_delete_url }}" class="dropdown-item delete" style="{% if detail %}display: block;{% endif %}">Удалить</a>
 					</div>
@@ -60,8 +61,9 @@
 								</a>
 								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 									<a class="dropdown-item" href="{% url 'profile' author_post=request.user.username  %}" >Личный кабинет</a>
+									<a class="dropdown-item" href="{% url 'favorites' author_post=request.user.username %}">Избранное</a>
 									<a class="dropdown-item" href="{{ '/accounts/logout/' }}" style="color: red">Выйти</a>
-									{% endif %}
+				{% endif %}
 									{% if request.user.is_authenticated and request.user.is_staff %}
 									<a class="dropdown-item" href="{% url 'admin:index' %}">Панель администатора</a>
 									{% endif %}

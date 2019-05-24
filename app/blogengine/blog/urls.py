@@ -37,6 +37,7 @@ urlpatterns = [
     path('profile/<str:author_post>/rating/', rating_sum_prof, name='rating_prof'),
     path('favorites/', AddArticleToFavorites.as_view(), name='add_to_favorites'),
     path('favorites_profile/', AddProfileToFavorites.as_view(), name='add_to_favorites_profile'),
+    path('favorites/<str:author_post>', render_favorite, name='favorites')
 ]
 
 # Нужно для отображения в адрессной строке номрмального пути , где хранятся картинки и статические файлы
