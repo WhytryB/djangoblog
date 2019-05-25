@@ -1,0 +1,36 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+	Профиль - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<h3 class="text-center">Избранные статьи пользователя {{ username }}</h3>
+<hr>
+            <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-center"><strong>Статьи</strong></h4>
+					<ul class="button-group">
+						{% for fav in author.favorite_articles.all %}
+						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav.title}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="col-sm-4">
+					<h4 class="text-center"><strong>Профили</strong></h4>
+					<ul class="button-group">
+						{% for fav in author.favorite_profiles.all %}
+						<li class="list-group-item"><a href="{{fav.get_absolute_url }}" style="color:black;">{{fav}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<br>
+				</div>
+        </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
