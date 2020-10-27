@@ -11,7 +11,7 @@ chardet==3.0.4
 command-not-found==0.3
 comtypes==1.1.7
 constantly==15.1.0
-cryptography==2.1.4
+cryptography==3.2
 cssselect==1.0.3
 cupshelpers==1.0
 cycler==0.10.0
